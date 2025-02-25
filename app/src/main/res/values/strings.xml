@@ -1,0 +1,24 @@
+<resources>
+    <!-- Uygulama Adı -->
+    <string name="app_name">GamePedia</string>
+
+    <!-- Genel Tanımlar -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="game_image_desc">Game Image</string>
+    <string name="back_button_desc">Back Button</string>
+    <string name="staricon">Star Icon</string>
+    <string name="add_to_favorites">Add to Favorites</string>
+    <string name="game_cover">Game Cover</string>
+
+    <!-- Spinner (Sıralama Seçenekleri) -->
+    <string-array name="sorting_options">
+        <item>Rating</item>
+        <item>Release Date</item>
+    </string-array>
+
+    <!-- Diğer Alanlar -->
+    <string name="search_hint">Search Games</string>
+    <string name="page_number_hint">Page Number</string>
+    <string name="page_size_hint">Page Size</string>
+    <string name="no_results">No results found</string>
+</resources>

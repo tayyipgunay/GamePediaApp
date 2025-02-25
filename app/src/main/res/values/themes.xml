@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme -->
+    <style name="Base.Theme.GamePedia" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Temanın özelleştirilmesi -->
+        <!-- Örnek renk özelleştirmesi -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorSecondary">@color/teal_200</item>
+    </style>
+
+    <!-- Uygulama Teması -->
+    <style name="Theme.GamePedia" parent="Base.Theme.GamePedia">
+        <!-- Ek özelleştirmeler -->
+    </style>
+
+
+</resources>

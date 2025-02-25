@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Homepage Item -->
+    <item
+        android:id="@+id/menu_home"
+        android:icon="@drawable/homepage"
+        android:title="Homepage" />
+
+    <!-- Favorites Item -->
+    <item
+        android:id="@+id/menu_favorites"
+        android:icon="@drawable/staricon"
+        android:title="Favorites" />
+
+
+
+</menu>

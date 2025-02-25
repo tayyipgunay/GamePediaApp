@@ -1,0 +1,94 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:background="#2E2E2E">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/gameImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/gta5"
+            android:scaleType="centerCrop"
+            android:contentDescription="Game Image"
+            android:layout_marginEnd="16dp"
+            app:shapeAppearanceOverlay="@style/RoundedCornerImageView"
+            app:strokeColor="#FFA500"
+            app:strokeWidth="2dp"
+            android:elevation="6dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/gameTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Game Title"
+                android:textColor="#B0B0B0"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:ellipsize="none" />
+
+            <TextView
+                android:id="@+id/gameGenreTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Action/Adventure"
+                android:textSize="16sp"
+                android:textColor="#B0B0B0"
+                android:layout_marginTop="6dp"
+                android:drawablePadding="8dp"
+                android:ellipsize="none" />
+
+            <TextView
+                android:id="@+id/gameReleaseDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Release Date: 2024-01-01"
+                android:textSize="16sp"
+                android:textColor="#B0B0B0"
+                android:layout_marginTop="6dp"
+                android:drawablePadding="8dp"
+                android:ellipsize="none" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ratingStarImageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/staricon"
+                    android:layout_marginEnd="4dp"
+                    app:tint="#FFA500" />
+
+                <TextView
+                    android:id="@+id/gameRatingTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5"
+                    android:textColor="#B0B0B0"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

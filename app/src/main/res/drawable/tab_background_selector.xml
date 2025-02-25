@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Seçili durum -->
+    <item android:state_selected="true" android:drawable="@color/green" />
+    <!-- Normal durum -->
+    <item android:drawable="@color/gray" />
+</selector>

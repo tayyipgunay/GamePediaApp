@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- BottomNavigationView için özel stil -->
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">#212121</item> <!-- Düz renk -->
+        <item name="elevation">8dp</item> <!-- Yükseklik -->
+        <item name="itemIconSize">24dp</item> <!-- İkon boyutu -->
+        <item name="itemTextAppearanceActive">@style/BottomNavActiveTextStyle</item> <!-- Aktif metin stili -->
+        <item name="itemTextAppearanceInactive">@style/BottomNavInactiveTextStyle</item> <!-- Pasif metin stili -->
+        <item name="labelVisibilityMode">labeled</item> <!-- Sadece seçili metinleri göster -->
+    </style>
+
+    <!-- BottomNavigationView için aktif metin stili -->
+    <style name="BottomNavActiveTextStyle" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/white</item> <!-- Aktif metin rengi -->
+        <item name="android:textSize">12sp</item> <!-- Metin boyutu -->
+    </style>
+
+    <!-- BottomNavigationView için pasif metin stili -->
+    <style name="BottomNavInactiveTextStyle" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/light_grey</item> <!-- Pasif metin rengi -->
+        <item name="android:textSize">10sp</item> <!-- Metin boyutu -->
+    </style>
+
+    <!-- Yuvarlatılmış köşeler için özel stil -->
+    <style
+        name="RoundedCornerImageView"
+        parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- Aktif Buton Stili -->
+    <style name="ActiveButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">#4CAF50</item> <!-- Yeşil arka plan -->
+        <item name="android:textColor">#FFFFFF</item> <!-- Beyaz metin -->
+        <item name="android:textSize">16sp</item> <!-- Daha büyük metin -->
+    </style>
+
+    <!-- Varsayılan Buton Stili -->
+    <style name="DefaultButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">#3C3C3C</item> <!-- Gri arka plan -->
+        <item name="android:textColor">#000000</item> <!-- Siyah metin -->
+        <item name="android:textSize">14sp</item> <!-- Daha küçük metin -->
+    </style>
+</resources>
