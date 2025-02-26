@@ -7,7 +7,7 @@ import com.tayyipgunay.gamepedia.util.Resource
 import javax.inject.Inject
 
 class GetGameDetailsUseCase @Inject constructor(private val detailsRepository: DetailsRepository) {
-   /* suspend fun executeGetGameDetailsUseCase(gameId: Int): GameDetail {
+    /* suspend fun executeGetGameDetailsUseCase(gameId: Int): GameDetail {
         val response = gameRepository.getGameDetails(gameId)
         if (response.isSuccessful) {
             val gameDetails = response.body()?.toGameDetail()
@@ -18,26 +18,29 @@ class GetGameDetailsUseCase @Inject constructor(private val detailsRepository: D
 
     }*/
 
-    suspend fun executeGetGameDetailsUseCase(gameId: Int): Resource<GameDetail>{
-        val result=detailsRepository.getGameDetails(gameId)
+    suspend fun executeGetGameDetailsUseCase(gameId: Int): Resource<GameDetail> {
+        // detailsRepository üzerinden oyun detaylarını getirir
+        val result = detailsRepository.getGameDetails(gameId)
 
-       return when(result){
+        // Resource türüne göre işlem yapılır
+        return when (result) {
             is Resource.Success -> {
+                // Başarı durumunda, DTO verisini GameDetail modeline dönüştürerek döndürür
                 Resource.Success(result.data!!.toGameDetail())
             }
 
             is Resource.Error -> {
-                Resource.Error(result.message ?: "An error occurred while fetching game Detail data.")
-
+                // Hata durumunda, hata mesajını ekleyerek geri döndürür
+                Resource.Error(
+                    result.message ?: "An error occurred while fetching game detail data."
+                )
             }
+
             is Resource.Loading -> {
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndürür
                 Resource.Loading()
             }
         }
-
-
     }
-
-
 }
 

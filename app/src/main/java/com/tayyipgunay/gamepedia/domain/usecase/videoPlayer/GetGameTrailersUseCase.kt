@@ -18,22 +18,26 @@ class GetGameTrailersUseCase @Inject constructor(private val videoPlayerReposito
 
 
     suspend fun executeGetGameTrailers(gameId: Int): Resource<List<GameTrailer>> {
+        // Belirtilen oyun ID'sine göre fragmanları (trailers) getirir
         val response = videoPlayerRepository.getGameTrailerVideo(gameId)
+
+        // Resource türüne göre işlem yapılır
         return when (response) {
             is Resource.Success -> {
+                // Başarı durumunda, DTO verisini domain modeline dönüştürerek döndürür
                 Resource.Success(response.data!!.toGameTrailers())
-
             }
 
             is Resource.Error -> {
+                // Hata durumunda, hata mesajını ekleyerek geri döndürür
                 Resource.Error(response.message!!)
             }
 
             is Resource.Loading -> {
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndürür
                 Resource.Loading()
             }
         }
-
     }
 }
 

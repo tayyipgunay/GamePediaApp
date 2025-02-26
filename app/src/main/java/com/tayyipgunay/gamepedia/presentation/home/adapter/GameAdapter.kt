@@ -71,12 +71,7 @@ val game =gameList[position]
         notifyDataSetChanged()
 
     }
-    fun insertGameList(newGameList: List<Game>) {
-        gameList.clear()
-        gameList.addAll(newGameList)
-        notifyDataSetChanged()
 
-    }
     fun placeHolderProgressBar(context: Context): CircularProgressDrawable {
         // CircularProgressDrawable nesnesi oluşturuluyor
         return CircularProgressDrawable(context).apply {

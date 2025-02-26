@@ -12,76 +12,95 @@ import com.tayyipgunay.gamepedia.presentation.videoPlayer.fragment.VideoPlayerFr
 
 class VideoPlayerFragment : Fragment() {
 
-    private var _binding: FragmentVideoPlayerBinding? = null
-    private val binding get() = _binding!!
+    /**
+     * VideoPlayerFragment, ExoPlayer kullanarak bir video oynatıcı sunar.
+     * - Safe Args ile gelen video URL'ini alır.
+     * - ExoPlayer'ı başlatır ve videoyu oynatır.
+     * - Kullanıcı arayüzünü tam ekran moduna getirir.
+     * - Fragment yaşam döngüsü içinde ExoPlayer yönetimini yapar.
+     */
 
-    private lateinit var player: ExoPlayer
+        // ViewBinding değişkeni (Hafıza sızıntısını önlemek için null yapılmalıdır)
+        private var _binding: FragmentVideoPlayerBinding? = null
+        private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Binding'i başlat
-        _binding = FragmentVideoPlayerBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        // ExoPlayer oynatıcısı
+        private lateinit var player: ExoPlayer
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        try {
-
-
-        // ExoPlayer oluştur
-        player = ExoPlayer.Builder(requireContext()).build()
-        binding.playerView.player = player // PlayerView ile ExoPlayer'ı bağla
-        // Safe Args ile gelen argümanı al
-         arguments?.let {bundle->
-            val videoUrl= VideoPlayerFragmentArgs.fromBundle(bundle).videoUrl
-             // Video URL'sini oynatıcıya ekle
-             if (!videoUrl.isNullOrEmpty()) {
-                 val mediaItem = MediaItem.fromUri(videoUrl)
-                 player.setMediaItem(mediaItem)
-                 player.prepare()
-                 player.playWhenReady = true
-
-
-             }
-         }
-
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View {
+            // Binding'i başlat
+            _binding = FragmentVideoPlayerBinding.inflate(inflater, container, false)
+            return binding.root
         }
-        catch (e:Exception){
-println(e.message)
 
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            try {
+                // ExoPlayer'ı oluştur ve PlayerView'e bağla
+                player = ExoPlayer.Builder(requireContext()).build()
+                binding.playerView.player = player
+
+                // Safe Args kullanarak gelen video URL'sini al
+                arguments?.let { bundle ->
+                    val videoUrl = VideoPlayerFragmentArgs.fromBundle(bundle).videoUrl
+
+                    // Eğer video URL geçerli ise medya oynatıcıya ekle ve başlat
+                    if (!videoUrl.isNullOrEmpty()) {
+                        val mediaItem = MediaItem.fromUri(videoUrl)
+                        player.setMediaItem(mediaItem)
+                        player.prepare() // Videoyu hazırla
+                        player.playWhenReady = true // Otomatik oynatma başlasın
+                    }
+                }
+            } catch (e: Exception) {
+                println("ExoPlayer Hatası: ${e.message}") // Hata durumunda log yazdır
+            }
         }
-    }
 
+        /**
+         * Fragment görünümü yok edilirken:
+         * - Hafıza sızıntısını önlemek için binding null yapılır.
+         * - ExoPlayer kaynaklarını serbest bırakır.
+         */
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _binding = null
+            player.release()
+        }
 
+        /**
+         * Kullanıcı uygulamadan ayrıldığında:
+         * - Video duraklatılır.
+         */
+        override fun onPause() {
+            super.onPause()
+            player.playWhenReady = false
+            player.pause()
+        }
 
+        /**
+         * Kullanıcı geri döndüğünde:
+         * - Video oynatılmaya devam eder.
+         */
+        override fun onResume() {
+            super.onResume()
+            player.playWhenReady = true
+        }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // Hafıza sızıntısını önlemek için
-        player.release() // ExoPlayer'ı serbest bırak
-    }
-    override fun onPause() {
-        super.onPause()
-        player.playWhenReady = false
-        player.pause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        player.playWhenReady = true
-    }
-    override fun onStart() {
-        super.onStart()
-// WindowInsetsController ile tam ekran modu
-        requireActivity().window.decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-    }
+        /**
+         * Fragment başlatıldığında:
+         * - Tam ekran modu aktif edilir.
+         */
+        override fun onStart() {
+            super.onStart()
+            requireActivity().window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
     }
 
 

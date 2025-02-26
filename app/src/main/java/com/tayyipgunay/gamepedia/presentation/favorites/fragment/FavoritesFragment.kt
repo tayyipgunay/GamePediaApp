@@ -26,14 +26,17 @@ class FavoritesFragment : Fragment() {
     // ViewBinding değişkeni
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
+
+    // ViewModel tanımlaması (Hilt tarafından sağlanıyor)
     private val favoritesViewModel: FavoritesViewModel by viewModels()
 
+    // Favori oyunları göstermek için RecyclerView adaptörü
     private val favoriteAdapter = FavoriteAdapter(arrayListOf())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Binding'i başlat
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
@@ -42,17 +45,19 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // RecyclerView için adaptör ve layout manager ayarlanıyor
         binding.favoritesRecyclerView.adapter = favoriteAdapter
         binding.favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // RecyclerView'de kaydırarak silme işlemini etkinleştir
         recyclerSwipe()
 
-
-        //favoritesViewModel.getFavoritesGames()
+        // ViewModel ile favori oyunları getir
         favoritesViewModel.onEvent(FavoriteEvent.getFavoritesGames)
 
+        // LiveData gözlemcileri başlat
         observe()
         observeDelete()
-
     }
 
     override fun onDestroyView() {
@@ -60,59 +65,50 @@ class FavoritesFragment : Fragment() {
         _binding = null // Binding'i temizle (hafıza sızıntısını önlemek için)
     }
 
+    // Favori oyunları gözlemleyen fonksiyon
     fun observe() {
         favoritesViewModel.getFavoriteState.observe(viewLifecycleOwner) { getFavoriteState ->
             if (getFavoriteState.isLoading) {
                 binding.loadingProgressBar.visibility = View.VISIBLE
-                println("favorites is loading")
-
-
+                println("Favorites is loading")
             }
 
             getFavoriteState.games?.let {
-                println("favorites games var let içindeyiz")
-                //  println(getFavoriteState.games.get(0).backgroundImage)
+                println("Favorites games var, let içinde çalışıyor")
 
+                // Yeni oyun listesini adaptöre yükle
                 favoriteAdapter.updateGameList(getFavoriteState.games)
+                println(getFavoriteState.games.get(0).name)
+
                 binding.loadingProgressBar.visibility = View.GONE
-
-
             }
+
             getFavoriteState.errorMessage?.let {
-                println("favorites error var ")
-              //  favoriteAdapter.updateGameList(emptyList())
-
-
+                println("Favorites error var")
             }
-
         }
     }
 
+    // Silme işlemlerini gözlemleyen fonksiyon
     fun observeDelete() {
         favoritesViewModel.deleteFavoriteState.observe(viewLifecycleOwner) { deleteFavoriteState ->
             if (deleteFavoriteState.isLoading) {
-                println("favorites delete  is loading")
-
+                println("Favorites delete is loading")
             }
             if (deleteFavoriteState.isSuccess) {
-                println("favorites deleted")
+                println("Favorite deleted successfully")
                 Toast.makeText(requireContext(), "Game deleted", Toast.LENGTH_SHORT).show()
-               // favoritesViewModel.getFavoritesGames()
-                favoritesViewModel.onEvent(FavoriteEvent.getFavoritesGames)
 
+                // Silme işleminden sonra favori oyunları güncelle
+                favoritesViewModel.onEvent(FavoriteEvent.getFavoritesGames)
             }
             deleteFavoriteState.errorMessage?.let {
-                println("favorites error var  " + deleteFavoriteState.errorMessage)
-
-
+                println("Favorites delete error: ${deleteFavoriteState.errorMessage}")
             }
-
         }
-
-
     }
 
-
+    // RecyclerView'de kaydırarak silme işlemini yönetir
     fun recyclerSwipe() {
         val itemTouchHelper =
             ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -134,7 +130,6 @@ class FavoritesFragment : Fragment() {
                     val position = viewHolder.bindingAdapterPosition
                     val game = favoriteAdapter.getGameAt(position)
 
-
                     // AlertDialog oluştur
                     val builder = AlertDialog.Builder(requireContext())
                     builder.setTitle("Silme İşlemi")
@@ -142,14 +137,11 @@ class FavoritesFragment : Fragment() {
 
                     // "Evet" butonu
                     builder.setPositiveButton("Evet") { dialog, _ ->
-                        // Veritabanından silme işlemi
-                     //   favoritesViewModel.deleteFavoriteGame(game.id)
+                        // ViewModel üzerinden favorilerden oyunu sil
                         favoritesViewModel.onEvent(FavoriteEvent.DeleteFavorite(game.id))
 
-
-                        // Adaptör listesinden silme
+                        // Adaptörden silme işlemi
                         favoriteAdapter.removeGame(position)
-
 
                         dialog.dismiss()
                     }
@@ -158,14 +150,11 @@ class FavoritesFragment : Fragment() {
                     builder.setNegativeButton("Hayır") { dialog, _ ->
                         // İşlemi iptal et ve öğeyi geri yükle
                         favoriteAdapter.notifyItemChanged(position)
-
                         dialog.dismiss()
                     }
 
                     // Dialogu göster
                     builder.create().show()
-
-
                 }
 
                 override fun onChildDraw(
@@ -204,8 +193,11 @@ class FavoritesFragment : Fragment() {
                 }
             })
 
+        // RecyclerView'e kaydırma işlevini bağla
         itemTouchHelper.attachToRecyclerView(binding.favoritesRecyclerView)
     }
+}
+
 
     /* fun onEvent(event: FavoriteEvent) {
         when (event) {
@@ -218,7 +210,7 @@ class FavoritesFragment : Fragment() {
             }
         }
     }*/
-}
+
 
 
 

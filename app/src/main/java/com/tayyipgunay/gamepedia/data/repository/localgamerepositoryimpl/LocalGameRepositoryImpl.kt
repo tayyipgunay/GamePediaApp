@@ -9,55 +9,53 @@ import javax.inject.Inject
 
 class LocalGameRepositoryImpl @Inject constructor(private val gameDao: GameDao) :
     LocalGameRepository {
+
+    // Tüm oyunları veritabanından getirir ve sonucu Resource olarak döndürür
     override suspend fun getAllGames(): Resource<List<GameEntity>> {
         return try {
             val games = gameDao.getAllGames()
             if (games.isEmpty()) {
-                println("veritanıdan oyunn yokkk")
-                Resource.Error("No games found.")
+                println("veritabanında oyun yok")
+                Resource.Error("No games found.") // Eğer veritabanında oyun yoksa hata mesajı döndürülür
             } else {
-                Resource.Success(games)
+                Resource.Success(games) // Oyunlar bulunduysa başarılı olarak döndürülür
             }
         } catch (e: Exception) {
-            Resource.Error("An error occurred while fetching games: ${e.localizedMessage}")
+            Resource.Error("An error occurred while fetching games: ${e.localizedMessage}") // Hata yönetimi
         }
     }
 
+    // Yeni bir oyunu veritabanına ekler ve sonucu Resource olarak döndürür
     override suspend fun insertGame(game: GameEntity): Resource<Unit> {
         return try {
-            println(game.name)
+            println(game.name) // Oyun adını log olarak yazdırır
             gameDao.insertGame(game)
-            Resource.Success(Unit) // Bir işlem tamamlandığında Unit döndürür
-        }
-     catch (e: SQLiteConstraintException)
-    {
-        Resource.Error("Bu oyun zaten favorilerde.")
-    }
-        catch (e: Exception) {
-            Resource.Error("An error occurred while inserting the game: ${e.localizedMessage}")
+            Resource.Success(Unit) // Başarıyla eklendiğinde Unit döndürülür
+        } catch (e: SQLiteConstraintException) {
+            Resource.Error("Bu oyun zaten favorilerde.") // Eğer oyun zaten ekliyse hata mesajı döndürülür
+        } catch (e: Exception) {
+            Resource.Error("An error occurred while inserting the game: ${e.localizedMessage}") // Hata yönetimi
         }
     }
 
+    // Belirtilen ID'ye sahip oyunu veritabanından siler ve sonucu Resource olarak döndürür
     override suspend fun deleteGameById(gameId: Int): Resource<Unit> {
         return try {
             gameDao.deleteGameById(gameId)
-            Resource.Success(Unit)
+            Resource.Success(Unit) // Başarıyla silindiğinde Unit döndürülür
         } catch (e: Exception) {
-            Resource.Error("An error occurred while deleting the game: ${e.localizedMessage}")
+            Resource.Error("An error occurred while deleting the game: ${e.localizedMessage}") // Hata yönetimi
         }
     }
 
+    // Oyunun favorilere eklenip eklenmediğini kontrol eder ve sonucu Resource olarak döndürür
     override suspend fun isGameFavorited(gameId: Int): Resource<Boolean> {
         return try {
             val isFavorited = gameDao.isGameFavorited(gameId)
-            Resource.Success(isFavorited)
-
-    }
-        catch (e:Exception){
-            Resource.Error("An error occurred while checking if the game is favorited: ${e.localizedMessage}")
-
+            Resource.Success(isFavorited) // Favori olup olmadığı sonucunu döndürür
+        } catch (e: Exception) {
+            Resource.Error("An error occurred while checking if the game is favorited: ${e.localizedMessage}") // Hata yönetimi
         }
     }
 }
-
 

@@ -29,10 +29,13 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
     }*/
+// Veritabanı sınıfını tanımlar. entities parametresi ile kullanılacak entity'leri belirtir.
+// version parametresi ile veritabanı sürümü belirlenir.
 @Database(entities = [GameEntity::class], version = 1)
+// TypeConverters ile özel dönüştürücüleri (converters) belirtir.
 @TypeConverters(GenresConverter::class)
 abstract class AppDatabase : RoomDatabase() {
+    // GameDao arayüzünü (interface) kullanarak veritabanı işlemlerini gerçekleştirecek metodu tanımlar.
     abstract fun gameDao(): GameDao
 }
-
 

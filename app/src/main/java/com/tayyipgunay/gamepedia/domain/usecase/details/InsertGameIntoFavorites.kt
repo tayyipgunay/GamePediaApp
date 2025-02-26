@@ -10,31 +10,26 @@ class insertGameIntoFavorites @Inject constructor(private val localGameRepositor
 
 
     suspend fun executeinsertGameIntoFavorites(game: Game): Resource<Unit> {
+        // Oyunu GameEntity formatına dönüştürüp veritabanına ekler
         val result = localGameRepository.insertGame(game.toEntity())
 
-        when (result) {
+        // Resource türüne göre işlem yapılır
+        return when (result) {
             is Resource.Error -> {
-                println("ekleme errror içindeyiz")
+                println("Ekleme işlemi sırasında hata oluştu")
                 return Resource.Error(
-                    result.message ?: "An error occurred while fetching game data.")
-
-
-
+                    result.message ?: "An error occurred while inserting the game into favorites."
+                )
             }
 
             is Resource.Loading -> {
-                println("ekleme loading içindeyiz")
-
+                println("Ekleme işlemi devam ediyor")
                 return Resource.Loading()
-
             }
 
             is Resource.Success -> {
-                println("ekleme sucess içindeyiz içindeyiz")
-
-                return Resource.Success(Unit)
-
-
+                println("Ekleme işlemi başarılı")
+                return Resource.Success(Unit) // Başarılı işlem sonucunda Unit döndürülür
             }
         }
     }

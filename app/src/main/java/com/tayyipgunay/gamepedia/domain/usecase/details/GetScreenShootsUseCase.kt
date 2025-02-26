@@ -22,18 +22,25 @@ class GetScreenShootsUseCase @Inject constructor(private val detailsRepository: 
     }*/
 
     suspend fun executeGetScreenShoots(gameSlugOrId: String): Resource<List<Screenshot>> {
+        // detailsRepository üzerinden oyunun ekran görüntülerini getirir
         val result = detailsRepository.getScreenshoots(gameSlugOrId)
+
+        // Resource türüne göre işlem yapılır
         return when (result) {
             is Resource.Success -> {
+                // Başarı durumunda, DTO verisini domain modeline dönüştürerek döndürür
                 Resource.Success(result.data!!.toScreenshotDomainModel())
             }
 
             is Resource.Error -> {
+                // Hata durumunda, hata mesajını ekleyerek geri döndürür
                 Resource.Error(result.message!!)
             }
 
-
-            is Resource.Loading -> Resource.Loading()
+            is Resource.Loading -> {
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndürür
+                Resource.Loading()
+            }
         }
     }
 }

@@ -18,96 +18,113 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor(private val getFavoritesGamesUseCase: getFavoritesGameFromRoomUseCase, private val deleteFavoriteGameFromRoomUseCase: deleteFavoriteGameFromRoomUseCase, private val isGameFavoritedUseCase: isGameFavoritedUseCase) : ViewModel() {
+class FavoritesViewModel @Inject constructor(
+    private val getFavoritesGamesUseCase: getFavoritesGameFromRoomUseCase,
+    private val deleteFavoriteGameFromRoomUseCase: deleteFavoriteGameFromRoomUseCase,
+    private val isGameFavoritedUseCase: isGameFavoritedUseCase
+) : ViewModel() {
 
-
+    // Favori oyunları yönetmek için MutableLiveData
     private val _getFavoriteState = MutableLiveData<GetAllGamesState>(GetAllGamesState())
     val getFavoriteState: LiveData<GetAllGamesState> get() = _getFavoriteState
 
-
+    // Favori oyun silme işlemini yönetmek için MutableLiveData
     private val _deleteFavoriteState = MutableLiveData<DeleteGameState>(DeleteGameState())
     val deleteFavoriteState: LiveData<DeleteGameState> get() = _deleteFavoriteState
 
-
+    /**
+     * Favori oyunları veritabanından çeken fonksiyon.
+     */
     fun getFavoritesGames() {
-        println("get favorties game çalıştı")
+        println("getFavoritesGames çalıştı")
+
+        // İlk olarak yükleme durumunu gösterir
         _getFavoriteState.value = _getFavoriteState.value?.copy(
             isLoading = true,
             games = null,
             errorMessage = null
         )
-        println("coroutinne çalışma evresi")
-        viewModelScope.launch(Dispatchers.IO) {
-            println("coroutine içindeyiz")
+
+        println("Coroutine çalışma evresi başladı")
+        viewModelScope.launch(Dispatchers.IO) { // IO thread'inde çalıştır
+            println("Coroutine içinde çalışıyor")
             val result = getFavoritesGamesUseCase.executegetFavoritesGameFromRoomUseCase()
-            println("result çağrısı yapıldı bitti")
-            withContext(Dispatchers.Main) {
-                println("Dispatcher main başındayız.")
+            println("Result çağrısı tamamlandı")
+
+            withContext(Dispatchers.Main) { // UI thread'e geri dön
+                println("Dispatcher Main içinde çalışıyoruz")
+
                 when (result) {
                     is Resource.Success -> {
-                        println("viewModel getFavorite success başındayız  " + result.data?.get(0))
+                        println("ViewModel getFavorite success: " + result.data?.get(0))
+
                         _getFavoriteState.value = _getFavoriteState.value?.copy(
                             isLoading = false,
                             games = result.data,
                             errorMessage = null
                         )
-                        println("viewModel getFavorite success sonundayız")
 
+                        println("ViewModel getFavorite success tamamlandı")
+                        println(result.data?.get(0)?.backgroundImage +" -------")
                     }
 
                     is Resource.Error -> {
-                        println("viewModel getFavorite error başındayız")
+                        println("ViewModel getFavorite error başladı")
 
                         _getFavoriteState.value = _getFavoriteState.value?.copy(
                             isLoading = false,
                             games = null,
                             errorMessage = result.message
                         )
-                        println("viewModel getFavorite error sonundayız")
 
+                        println("ViewModel getFavorite error tamamlandı")
                     }
 
-                    is Resource.Loading -> {//neden ünlem gerekti
-                        println("viewModel getFavorite laoding içindeyiz")
+                    is Resource.Loading -> {
+                        println("ViewModel getFavorite loading içinde")
 
                         _getFavoriteState.value = _getFavoriteState.value?.copy(
                             isLoading = true
                         )
-                        println("viewModel getFavorite laoding sonundayız")
 
+                        println("ViewModel getFavorite loading tamamlandı")
                     }
                 }
-
-
             }
         }
     }
 
+    /**
+     * Belirtilen oyun ID'sine sahip favori oyunu silen fonksiyon.
+     */
     fun deleteFavoriteGame(gameId: Int) {
-        _deleteFavoriteState.value= _deleteFavoriteState.value?.copy(
+        // İlk olarak yükleme durumunu gösterir
+        _deleteFavoriteState.value = _deleteFavoriteState.value?.copy(
             isLoading = true,
             isSuccess = false,
             errorMessage = null
         )
 
-
-
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) { // IO thread'inde çalıştır
             val result = deleteFavoriteGameFromRoomUseCase.executeDeleteFavoriteGame(gameId)
-            withContext(Dispatchers.Main) {
-println("dispatcher main içindeyizzz.")
+
+            withContext(Dispatchers.Main) { // UI thread'e geri dön
+                println("Dispatcher Main içindeyiz")
+
                 when (result) {
                     is Resource.Success -> {
-                        println("viewModel deleteFavoriteGame success başındayız")
+                        println("ViewModel deleteFavoriteGame success başladı")
+
                         _deleteFavoriteState.value = _deleteFavoriteState.value?.copy(
                             isLoading = false,
-                            isSuccess =true,
+                            isSuccess = true,
                             errorMessage = null
                         )
                     }
 
                     is Resource.Error -> {
-                        println("viewModel deleteFavoriteGame error başındayız")
+                        println("ViewModel deleteFavoriteGame error başladı")
+
                         _deleteFavoriteState.value = _deleteFavoriteState.value?.copy(
                             isLoading = false,
                             isSuccess = false,
@@ -115,28 +132,33 @@ println("dispatcher main içindeyizzz.")
                         )
                     }
 
-
                     is Resource.Loading -> {
-                        println("viewModel deleteFavoriteGame laoding içindeyiz")
+                        println("ViewModel deleteFavoriteGame loading içinde")
+
                         _deleteFavoriteState.value = _deleteFavoriteState.value?.copy(
                             isLoading = true
                         )
-
                     }
-
-
                 }
             }
         }
     }
+
+    /**
+     * UI'dan gelen olayları yöneten fonksiyon.
+     * @param event Kullanıcının gerçekleştirdiği olay
+     */
     fun onEvent(event: FavoriteEvent) {
         when (event) {
             is FavoriteEvent.getFavoritesGames -> {
                 getFavoritesGames()
-
             }
             is FavoriteEvent.DeleteFavorite -> {
                 deleteFavoriteGame(event.gameId)
+            }
+
+            else -> {
+
             }
         }
     }

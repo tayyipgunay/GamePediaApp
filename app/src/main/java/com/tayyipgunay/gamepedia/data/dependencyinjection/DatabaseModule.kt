@@ -13,24 +13,27 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-    @Provides
-    @Singleton
+@Module // Bu sınıfın bir Hilt Modülü olduğunu belirtir.
+@InstallIn(SingletonComponent::class) // Bu modülün SingletonComponent'e bağlı olduğunu belirtir.
+object DatabaseModule { // Modül, bir singleton nesnesi olarak tanımlanır.
+
+    // Room veritabanını sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        // Room veritabanını oluşturur ve döner.
         return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "game_database"
-        ).build()
+            context, // Uygulama context'i.
+            AppDatabase::class.java, // Veritabanı sınıfı.
+            "game_database" // Veritabanı adı.
+        ).build() // Veritabanını oluşturur.
     }
 
-    @Provides
-    @Singleton
+    // GameDao'yu sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideGameDao(appDatabase: AppDatabase): GameDao {
+        // Veritabanından GameDao'yu döner.
         return appDatabase.gameDao()
     }
-
-
 }

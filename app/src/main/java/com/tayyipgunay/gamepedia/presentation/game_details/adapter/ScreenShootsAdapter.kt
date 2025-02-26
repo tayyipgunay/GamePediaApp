@@ -10,57 +10,57 @@ import com.bumptech.glide.request.RequestOptions
 import com.tayyipgunay.gamepedia.databinding.ScreenShootsRowBinding
 import com.tayyipgunay.gamepedia.domain.model.Screenshot
 
-class ScreenShootsAdapter(private val screenshots: ArrayList<Screenshot>):RecyclerView.Adapter<ScreenShootsAdapter.screenShootHolder>() {
+class ScreenShootsAdapter(private val screenshots: ArrayList<Screenshot>) :
+    RecyclerView.Adapter<ScreenShootsAdapter.ScreenShootHolder>() {
 
+    // ViewHolder sınıfı: Her bir öğenin görünümünü tutar
+    class ScreenShootHolder(val screenShootHolder: ScreenShootsRowBinding) :
+        RecyclerView.ViewHolder(screenShootHolder.root)
 
-    class screenShootHolder(val screenShootHolder: ScreenShootsRowBinding) :
-        RecyclerView.ViewHolder(screenShootHolder.root) {
-
-
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): screenShootHolder {
+    // onCreateViewHolder: ViewHolder nesnesini oluşturur ve layout'u bağlar
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScreenShootHolder {
         val binding =
             ScreenShootsRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return screenShootHolder(binding)
-
+        return ScreenShootHolder(binding)
     }
 
+    // getItemCount: Listedeki toplam öğe sayısını döndürür
     override fun getItemCount(): Int {
         return screenshots.size
-
     }
 
-
-    override fun onBindViewHolder(holder: screenShootHolder, position: Int) {
-
+    // onBindViewHolder: Veriyi ViewHolder ile bağlar ve UI'yi günceller
+    override fun onBindViewHolder(holder: ScreenShootHolder, position: Int) {
+        // Glide için resim yükleme ayarları
         val requestOptions = RequestOptions()
-            .placeholder(placeHolderProgressBar(holder.itemView.context)) // Dönen GIF
-            //  .error(R.drawable.error_image) // Hata resmi
+            .placeholder(placeHolderProgressBar(holder.itemView.context)) // Yükleme göstergesi
+            // .error(R.drawable.error_image) // Hata resmi (isteğe bağlı olarak eklenebilir)
             .centerCrop()
             .fitCenter()
 
+        // İlgili konumdaki ekran görüntüsünü alır
+        val screenshot = screenshots[position]
 
-
-        val screenshoot = screenshots[position]
-        Glide.with(holder.itemView.context).load(screenshoot.imageUrl).apply(requestOptions)
+        // Glide ile ekran görüntüsünü ImageView'e yükler
+        Glide.with(holder.itemView.context)
+            .load(screenshot.imageUrl)
+            .apply(requestOptions)
             .into(holder.screenShootHolder.imageViewScreenshot)
-
     }
 
+    // Yeni ekran görüntülerini adaptöre ekler ve günceller
     fun updateScreenshotList(newScreenshotList: List<Screenshot>) {
         screenshots.clear()
         screenshots.addAll(newScreenshotList)
-        notifyDataSetChanged()
+        notifyDataSetChanged() // RecyclerView'i günceller
     }
 
+    // CircularProgressDrawable: Yükleme sırasında gösterilecek animasyonlu ilerleme çubuğu
     fun placeHolderProgressBar(context: Context): CircularProgressDrawable {
         return CircularProgressDrawable(context).apply {
             strokeWidth = 8f    // Döner çubuğun kalınlığı (çizgi genişliği)
             centerRadius = 40f  // Döner çubuğun merkezi yarıçapı
             start()             // Animasyonu başlat
         }
-
-
     }
 }

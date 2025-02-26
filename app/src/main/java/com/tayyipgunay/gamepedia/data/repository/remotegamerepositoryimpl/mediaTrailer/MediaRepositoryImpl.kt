@@ -9,6 +9,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(private val mediaApi: MediaApi) : VideoPlayerRepository {
+
+    // Belirtilen oyun ID'sine göre oyunun fragmanlarını (trailer) getirir
     override suspend fun getGameTrailerVideo(gameId: Int): Resource<GameTrailerResponseDto> {
         return try {
             val response = mediaApi.getGameTrailers(gameId = gameId)
@@ -16,23 +18,22 @@ class MediaRepositoryImpl @Inject constructor(private val mediaApi: MediaApi) : 
             if (response.isSuccessful) {
                 response.body()?.let { body ->
                     if (body.results.isEmpty()) {
-                        return Resource.Error("No games Trailer found.")
+                        return Resource.Error("No game trailers found.") // Eğer sonuç boşsa hata döndür
                     } else {
-                        return Resource.Success(body)
+                        return Resource.Success(body) // Fragmanları başarıyla döndür
                     }
-                } ?: return Resource.Error("No games Trailer found.")
+                } ?: return Resource.Error("No game trailers found.") // Null kontrolü
             } else {
-                return Resource.Error("API Error: ${response.code()} - ${response.message()}")
+                return Resource.Error("API Error: ${response.code()} - ${response.message()}") // API hatası yönetimi
             }
 
         } catch (e: IOException) {
-            println("internet bağlantısı yok")
-            delay(1000) // 1 saniye gecikme
-            Resource.Error("İnternet bağlantısı yok:")
+            println("İnternet bağlantısı yok")
+            delay(1000) // 1 saniye gecikme ekleyerek tekrar deneme yapılabilir
+            Resource.Error("İnternet bağlantısı yok") // İnternet bağlantısı hatası
         } catch (e: Exception) {
-            println("beklenmeyen bir hata oluştu")
-
-            Resource.Error(e.message ?: "beklenmeyen bir hata oluştu")
+            println("Beklenmeyen bir hata oluştu")
+            Resource.Error(e.message ?: "Beklenmeyen bir hata oluştu") // Genel hata yönetimi
         }
     }
 }

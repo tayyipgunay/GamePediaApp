@@ -10,26 +10,27 @@ import javax.inject.Inject
 
 class GetBannersUseCase @Inject constructor(private val homeRepository: HomeRepository) {
 
+    suspend fun BannerExecute(): Resource<List<Banner>> {
+        // Banner oyunlarını homeRepository üzerinden getirir
+        val result = homeRepository.getBannerGames()
 
-    suspend fun BannerExecute(): Resource<List<Banner>>{
-        val result=homeRepository.getBannerGames()
-      return when(result){
-          is Resource.Success->{
-              Resource.Success(result.data!!.toBannerDomainModel())
-          }
+        // Resource türüne göre işlem yapılır
+        return when (result) {
+            is Resource.Success -> {
+                // Başarı durumunda, DTO verisini domain modeline dönüştürerek döndürür
+                Resource.Success(result.data!!.toBannerDomainModel())
+            }
 
-          is Resource.Error -> {
-              Resource.Error(result.message!!)
-          }
-          is Resource.Loading -> {
-             Resource.Loading()
-          }
-      }
+            is Resource.Error -> {
+                // Hata durumunda, hata mesajını ekleyerek geri döndürür
+                Resource.Error(result.message!!)
+            }
 
-
-
+            is Resource.Loading -> {
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndürür
+                Resource.Loading()
+            }
+        }
     }
-
 }
-
 

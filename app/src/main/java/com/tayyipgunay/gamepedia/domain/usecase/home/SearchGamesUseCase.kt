@@ -21,21 +21,27 @@ class SearchGamesUseCase @Inject constructor (private val homeRepository: HomeRe
         }*/
 
 
-    suspend fun executeSearchGames(query: String,page:Int): Resource<List<Game>> {
-        val result = homeRepository.searchGames(query,page)
+    suspend fun executeSearchGames(query: String, page: Int): Resource<List<Game>> {
+        // Kullanıcının girdiği sorguya göre oyunları getirir
+        val result = homeRepository.searchGames(query, page)
+
+        // Resource türüne göre işlem yapılır
         return when (result) {
             is Resource.Success -> {
-                // Repository zaten boş sonuç kontrolünü yaptıysa, sadece dönüşüm yapabilirsiniz
+                // Repository zaten boş sonuç kontrolünü yaptıysa, sadece dönüşüm yap
                 Resource.Success(result.data!!.toGameDomainModel())
             }
             is Resource.Error -> {
+                // Hata durumunda, hata mesajını ekleyerek geri döndür
                 Resource.Error(result.message ?: "An error occurred while searching for games.")
             }
             is Resource.Loading -> {
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndür
                 Resource.Loading()
             }
         }
     }
+
 
     /*suspend fun executeSearchGames(query: String): Resource<List<Game>> {
         // Repository'den veri al

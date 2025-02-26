@@ -20,33 +20,39 @@ import dagger.Provides
 
 
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    object RepositoryModule {
+@Module // Bu sınıfın bir Hilt Modülü olduğunu belirtir.
+@InstallIn(SingletonComponent::class) // Bu modülün SingletonComponent'e bağlı olduğunu belirtir.
+object RepositoryModule { // Modül, bir singleton nesnesi olarak tanımlanır.
 
-        @Provides
-        @Singleton
-        fun provideHomeRepository(homeApi: HomeApi): HomeRepository {
-            return HomeRepositoryImpl(homeApi)
-        }//nedne impl değilde interface inejekte ederiz
-
-        @Provides
-        @Singleton
-        fun provideDetailsRepository(detailsApi: DetailsApi): DetailsRepository {
-            return DetailsRepositoryImpl(detailsApi)
-        }
-
-        @Provides
-        @Singleton
-        fun provideVideoPlayerRepository(mediaApi: MediaApi): VideoPlayerRepository {
-            return MediaRepositoryImpl(mediaApi)
-        }
-
-        @Provides
-        @Singleton
-        fun provideLocalGameRepository(gameDao: GameDao): LocalGameRepository {
-            return LocalGameRepositoryImpl(gameDao)
-        }
-
+    // HomeRepository örneğini sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
+    fun provideHomeRepository(homeApi: HomeApi): HomeRepository {
+        // HomeRepositoryImpl örneğini oluşturur ve döner.
+        return HomeRepositoryImpl(homeApi)
     }
 
+    // DetailsRepository örneğini sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
+    fun provideDetailsRepository(detailsApi: DetailsApi): DetailsRepository {
+        // DetailsRepositoryImpl örneğini oluşturur ve döner.
+        return DetailsRepositoryImpl(detailsApi)
+    }
+
+    // VideoPlayerRepository örneğini sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
+    fun provideVideoPlayerRepository(mediaApi: MediaApi): VideoPlayerRepository {
+        // MediaRepositoryImpl örneğini oluşturur ve döner.
+        return MediaRepositoryImpl(mediaApi)
+    }
+
+    // LocalGameRepository örneğini sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
+    fun provideLocalGameRepository(gameDao: GameDao): LocalGameRepository {
+        // LocalGameRepositoryImpl örneğini oluşturur ve döner.
+        return LocalGameRepositoryImpl(gameDao)
+    }
+}

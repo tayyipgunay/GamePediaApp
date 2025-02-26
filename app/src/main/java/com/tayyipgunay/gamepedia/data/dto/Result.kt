@@ -23,7 +23,6 @@ data class Result(
     val ratingTop: Int?, // En yüksek değerlendirme puanı
 
 
-
     @SerializedName("genres")
 val genres: List<GenresDto> // Oyun türleri
 )

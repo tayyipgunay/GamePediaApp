@@ -9,46 +9,40 @@ import javax.inject.Inject
 class getFavoritesGameFromRoomUseCase @Inject constructor(private val localGameRepository: LocalGameRepository) {
 
     suspend fun executegetFavoritesGameFromRoomUseCase(): Resource<List<Game>> {
+        // Tüm favori oyunları Room veritabanından getirir
         val result = localGameRepository.getAllGames()
 
-
-        when (result) {
-
+        // Resource türüne göre işlem yapılır
+        return when (result) {
             is Resource.Error -> {
-                println("veri çekme  Resource error içindeyiz " + result.message)
+                println("Veri çekme işlemi sırasında hata oluştu: " + result.message)
 
-                return Resource.Error(
+                // Hata mesajı ile birlikte hata durumunu döndürür
+                Resource.Error(
                     result.message ?: "An error occurred while fetching game data."
                 )
-
-
             }
 
             is Resource.Loading -> {
-                println("veri çekme  Resource loading içindeyiz " + result.message)
+                println("Veri çekme işlemi devam ediyor: " + result.message)
 
-                return Resource.Loading()
-
+                // Yüklenme (loading) durumu devam ederken bu durumu geri döndürür
+                Resource.Loading()
             }
 
             is Resource.Success -> {
-                println("veri çekme  Resource success içindeyiz " + result.message)
-                println("boşmu var mı  yukarıda yazıyor")
-                val resulData=result.data!!.map {
+                println("Veri çekme işlemi başarılı: " + result.message)
+                println("Oyun listesi boş mu? Sonuç yukarıda yazıyor.")
+
+                // Veritabanından gelen GameEntity listesini Game domain modeline dönüştürür
+                val resultData = result.data!!.map {
                     it.gameEntitytoDomain()
-
-                }
-                return Resource.Success(resulData)
-
                 }
 
-
-
+                // Başarıyla dönüştürülmüş veriyi döndürür
+                Resource.Success(resultData)
             }
         }
     }
-
-
-
-
+}
 

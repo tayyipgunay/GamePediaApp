@@ -19,33 +19,42 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
-@Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
-    @Provides
-    @Singleton
+@Module // Bu sınıfın bir Hilt Modülü olduğunu belirtir.
+@InstallIn(SingletonComponent::class) // Bu modülün SingletonComponent'e bağlı olduğunu belirtir.
+object NetworkModule { // Modül, bir singleton nesnesi olarak tanımlanır.
+
+    // Retrofit örneğini sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideRetrofit(): Retrofit {
+        // Retrofit örneğini oluşturur ve döner.
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            .baseUrl(Constants.BASE_URL) // API'nin temel URL'si.
+            .addConverterFactory(GsonConverterFactory.create()) // JSON verilerini Java/Kotlin nesnelerine dönüştürmek için Gson kullanır.
+            .build() // Retrofit örneğini oluşturur.
     }
 
-    @Provides
-    @Singleton
+    // HomeApi arayüzünü sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideHomeApi(retrofit: Retrofit): HomeApi {
+        // Retrofit üzerinden HomeApi arayüzünü oluşturur ve döner.
         return retrofit.create(HomeApi::class.java)
     }
 
-    @Provides
-    @Singleton
+    // DetailsApi arayüzünü sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideDetailsApi(retrofit: Retrofit): DetailsApi {
+        // Retrofit üzerinden DetailsApi arayüzünü oluşturur ve döner.
         return retrofit.create(DetailsApi::class.java)
     }
 
-    @Provides
-    @Singleton
+    // MediaApi arayüzünü sağlayan bir fonksiyon.
+    @Provides // Bu fonksiyonun bir bağımlılık sağladığını belirtir.
+    @Singleton // Bu bağımlılığın uygulama genelinde tek bir örnek (singleton) olacağını belirtir.
     fun provideMediaApi(retrofit: Retrofit): MediaApi {
+        // Retrofit üzerinden MediaApi arayüzünü oluşturur ve döner.
         return retrofit.create(MediaApi::class.java)
     }
 }
